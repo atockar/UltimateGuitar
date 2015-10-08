@@ -101,18 +101,17 @@ def mb_embellish():
 	lastArtist = ""
 	for it, row in enumerate(songs):
 		try:
-			if it > 52000:
-				if row[0] != lastArtist:
-					fields["country"], fields["genre"] = lookup_artist_MB(row[0])
-					fields["year"], fields["length"] = lookup_song_MB(row[0], row[1])
-					lastArtist = row[0]
-				else:
-					fields["year"], fields["length"] = lookup_song_MB(row[0], row[1])
+			if row[0] != lastArtist:
+				fields["country"], fields["genre"] = lookup_artist_MB(row[0])
+				fields["year"], fields["length"] = lookup_song_MB(row[0], row[1])
+				lastArtist = row[0]
+			else:
+				fields["year"], fields["length"] = lookup_song_MB(row[0], row[1])
 
-				# Insert into DimSong
-				newSong = DimSong(artistName=row[0],songName=row[1],nationality=fields["country"],genre=fields["genre"],year=fields["year"],length=fields["length"])
-				session.add(newSong)
-				session.commit()
+			# Insert into DimSong
+			newSong = DimSong(artistName=row[0],songName=row[1],nationality=fields["country"],genre=fields["genre"],year=fields["year"],length=fields["length"])
+			session.add(newSong)
+			session.commit()
 
 			if (it % 1000) == 0:
 				print "Iteration: " + str(it)
